@@ -20,6 +20,29 @@ struct crawlRequestArray
 // and then maybe make an enum for data type to put in the struct for error checking...
 // not sure if it's a good idea but seems like it'd remove tedium to some degree
 
+// of course, to manage things well, I'd need some generic array_free method with a switch statement for each type, and one to create the array, too.
+// A giant switch statement would be gross, so I'd want to make something with function pointers that lets me register these things, maybe a function in each header file that adds new structs.
+
+// having a generic array like that would be pretty useful, especially since I'd be able to know the types of things at runtime...
+// it might also be useful to know the types of the structs themselves at runtime, so it wouldn't be hard to make a generic 'reference' struct,
+// and I could add functions to construct and free them as well...
+// maybe it would be convienent to add additional parameters to those methods... I think it could be done with C's equivalent of varargs
+// of course the regeristing code would have to check that the parameters were of the correct types
+
+// it might also be convienent if I could have functions that act on a reference of a specific type, maybe tie it to the type itself with function pointers or something
+// but in order to give those functions unique names, I'd have to associate them with strings...
+// that's inconvienent
+
+// maybe I could add some sort of preprocessing, then, that allowed me to reference a type or reference's functions as normal, which then gets converted into the appropriate C code...
+// this could potentially make regeristing much simpler as well - whole files that represent a type could be processed into mostly regeristing code, and types could be checked during proccessing
+// as well, instead of at runtime (or maybe both?)
+
+// although this would probably make casting pretty complicated...
+// wait, is this how C++ came to be?
+
+// well, that seems to be a pretty strong 'if you give a mouse a cookie' situation, so I'll be wary then...
+// I still need to actually learn C++ sooner or later.
+
 
 struct indexedPage
 {
