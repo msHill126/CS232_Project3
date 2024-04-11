@@ -31,9 +31,9 @@ void freeType(const type t, void* obj);
 
 void printObject(FILE* stream, const type t, void* obj);
 
+
+
 // list element functions
-
-
 
 size_t getCount( listElement* list);
 // returns the number of elements in the list starting from element.

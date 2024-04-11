@@ -123,12 +123,14 @@ bool alwaysFail(void){return false;}
 
 int main(void)
 {
-
+    // this definitely feels like a crude imitation of real software...
+    // I could make a suite struct, that would probably help.
 
     unitTest basicTests[] = { *newTest("Always Pass", &alwaysPass), *newTest("Always Fail", &alwaysFail)
     };
     size_t basicTestsCount = sizeof(basicTests)/sizeof(unitTest);
-    unitTest listTests[] = { *newTest("Basic Comprehension", &basicComprehension), *newTest("Insertion", &insertion)
+    unitTest listTests[] = { *newTest("Basic Comprehension", &basicComprehension), *newTest("Insertion", &insertion),
+        *newTest("Deletion", &deletion)
     };
     size_t listTestsCount = sizeof(listTests)/sizeof(unitTest);
 
@@ -154,6 +156,7 @@ int main(void)
         testsPassing += runSuite("List Tests", listTests, listTestsCount);
     }
 
+    
     printf("\n\n-------------RESULT-------------\n %d/%d tests from %d suites passing. See above for details.\n", testsPassing, tests, suites);
 
 }

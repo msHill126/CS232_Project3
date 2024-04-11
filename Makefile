@@ -3,6 +3,6 @@ testOut = -o output/test
 SourceFiles = source/collection/*
 TestFiles = source/tests/test.c
 
-listTest:
+tests:
 	rm -f output/*
 	gcc $(GCCFlags) $(testOut) $(SourceFiles) $(TestFiles)

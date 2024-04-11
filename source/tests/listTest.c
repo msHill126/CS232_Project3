@@ -112,3 +112,68 @@ bool insertion(void)
     return true;
 
 }
+
+
+
+bool deletion(void)
+{
+    listElement* list = NULL;
+    int* num = malloc(sizeof(int));
+    *num = 5;
+    if(!addElement(&list, integer, num)) return false;
+
+    num = malloc(sizeof(int));
+    *num = 15;
+    if(!addElement(&list, integer, num)) return false;
+
+    num = malloc(sizeof(int));
+    int* last = num;
+    *num = 25;
+    if(!addElement(&list, integer, num)) return false;
+    printf("\tsuccessfully added starting elements...\n");
+
+
+    num = malloc(sizeof(int));
+    *num = 0;
+    if(!addElementAt(&list, integer, num, 0)) return false;
+    num = malloc(sizeof(int));
+    *num = 10;
+    if(!addElementAt(&list, integer, num, 2)) return false;
+    num = malloc(sizeof(int));
+    *num = 20;
+    if(!addElementAt(&list, integer, num, 4)) return false;
+    printf("\tsuccessfully inserted elements...\n");
+
+    if(!removeElement(&list, last)) return false;
+    printf("\tDeleted last element.\n");
+
+    printList(stdout, list);
+    if(!checkInt(getCount(list), 5)) return false;
+
+    for(int i = 0; i<5; i++)
+    {
+        listElement* ele = getElementAt(list, i);
+        if(!checkPointerNull(ele, false)) return false;
+        int x = *(int*)(ele->obj);
+        if(!checkInt(x,i*5)) return false;
+    }
+
+
+    if(!removeElementAt(&list, 0)) return false;
+    printf("\tDeleted first element.\n");
+
+    printList(stdout, list);
+    if(!checkInt(getCount(list), 4)) return false;
+
+    for(int i = 0; i<4; i++)
+    {
+        listElement* ele = getElementAt(list, i);
+        if(!checkPointerNull(ele, false)) return false;
+        int x = *(int*)(ele->obj);
+        if(!checkInt(x,(i*5)+5)) return false;
+    }
+
+    freeList(list);
+    return true;
+
+}
