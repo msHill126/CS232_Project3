@@ -8,7 +8,7 @@
 // I did think about implementing both somehow with the same interface... too much effort for this project though.
 // honestly this is sort of too much effort for this project, but I wanted to, so meh.
 
-size_t getCount(const listElement* list)
+size_t getCount(listElement* list)
 {
 
     listElement* current = list;
@@ -23,7 +23,7 @@ size_t getCount(const listElement* list)
 }
 
 
-listElement* getElementAt(const listElement* list, const size_t index)
+listElement* getElementAt(listElement* list, const size_t index)
 {
 
     listElement* current = list;
@@ -43,14 +43,14 @@ listElement* getElementAt(const listElement* list, const size_t index)
 }
 
 
-size_t getElementIndex(const listElement* list, const listElement* element)
+size_t getElementIndex( listElement* list, void* element)
 {
 
     listElement* current = list;
     
     for(size_t i = 0;  current!=NULL; i++)
     {
-        if(current == element)
+        if(current->obj == element)
         {
             return i;
         }
@@ -62,9 +62,9 @@ size_t getElementIndex(const listElement* list, const listElement* element)
 
 
 
-bool removeElement(listElement** list, listElement* element)
+bool removeElement(listElement** list, void* element)
 {
-    removeElementAt(list, getElementIndex(*list, element));
+    return removeElementAt(list, getElementIndex(*list, element));
 }
 
 
@@ -98,52 +98,13 @@ bool removeElementAt(listElement** list, const size_t index)
 }
 
 
-bool addElement(listElement** list, const type t, const void* obj)
+bool addElement(listElement** list, const type t, void* obj)
 {
-    return addElementAt(list, t, obj, getCount(list));
+    return addElementAt(list, t, obj, getCount(*list));
 }
 
 
-bool addElementAt(listElement** list, const type t, const void* obj, const size_t index)
-{
-    if(index == 0)
-    {
-        return prepend(list, t, obj);
-    }
-
-    listElement* before = getElementAt(*list, index-1);
-
-    if(before == NULL)
-    {
-        // out of bounds.
-        fprintf(stderr,"New index '%d' out of bounds for list size '%d'.\n", index, getCount(*list));
-        return false;
-    }
-
-    listElement* after = before->next;
-
-    // after may be null, if we are appending to the end of the list.
-
-    listElement* new = malloc(sizeof(listElement));
-    if(new==NULL)
-    {
-        fprintf(stderr,"malloc failed in addElementAt.\n");
-        return false;
-    }
-
-    new->next = after;
-    new->t = t;
-    new->obj = obj;
-
-    // correct before
-    before->next = new;
-
-    return true;
-
-    
-}
-
-static bool prepend(listElement** list, const type t, const void* obj)
+static bool prepend(listElement** list, const type t, void* obj)
 {
     // prepending to NULL works too - this is how you should create a list.
 
@@ -166,6 +127,47 @@ static bool prepend(listElement** list, const type t, const void* obj)
 
 
 
+bool addElementAt(listElement** list, const type t, void* obj, const size_t index)
+{
+    if(index == 0)
+    {
+        return prepend(list, t, obj);
+    }
+
+    listElement* before = getElementAt(*list, index-1);
+
+    if(before == NULL)
+    {
+        // out of bounds.
+        fprintf(stderr,"New index '%ld' out of bounds for list size '%ld'.\n", index, getCount(*list));
+        return false;
+    }
+
+    listElement* after = before->next;
+
+    // after may be null, if we are appending to the end of the list.
+    
+    listElement* new = malloc(sizeof(listElement));
+    if(new==NULL)
+    {
+        fprintf(stderr,"malloc failed in addElementAt.\n");
+        return false;
+    }
+
+    new->next = after;
+    new->t = t;
+    new->obj = obj;
+
+    // correct before
+    before->next = new;
+
+    return true;
+
+    
+}
+
+
+
 
 void freeList(listElement* list)
 {
@@ -178,26 +180,10 @@ void freeList(listElement* list)
 }
 
 
-listElement* arrayToList(const type t, void* objects[])
-{
-    listElement* list = NULL;
-
-    for(int i = 0; i<sizeof(objects)/sizeof(void*); i++)
-    {
-        if(!addElement(&list, t, objects[i]))
-        {
-            freeList(list);
-            return NULL;
-        }
-    }
-
-    return list;
-}
-
 
 void printList(FILE* stream, listElement* list)
 {
-    fprintf(stream, "%d element list:\n", getCount(list));
+    fprintf(stream, "%ld element list:\n", getCount(list));
 
     while(list!=NULL)
     {

@@ -20,7 +20,7 @@ void freeType(const type t, void* obj)
 }
 
 
-void printObject(FILE* stream, const type t, const void* obj)
+void printObject(FILE* stream, const type t, void* obj)
 {
     if(obj == NULL)
     {
@@ -32,10 +32,10 @@ void printObject(FILE* stream, const type t, const void* obj)
     {
     
         case integer:
-            fprintf(stream, "%d", obj);
+            fprintf(stream, "%d", *(int*)obj);
             return;
         case cstring:
-            fprintf(stream, "%s", obj);
+            fprintf(stream, "%s", (char*)obj);
             return;
         default:
             fprintf(stream, "Unknown Type '%d'",t);
