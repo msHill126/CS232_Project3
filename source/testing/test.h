@@ -1,4 +1,5 @@
 #include <stdbool.h>
+#include <stddef.h>
 #ifndef TEST_H
 #define TEST_H
 
@@ -15,11 +16,27 @@ struct unitTest
     bool passed;
 };
 
+
 typedef struct unitTest unitTest;
+
+struct testSuite
+{
+  char* name;
+  unitTest* tests;
+  size_t testCount;  
+};
+
+typedef struct testSuite testSuite;
 
 unitTest* newTest(char* name, bool(*test)());
 
+testSuite* newSuite(char* name, unitTest* tests, size_t testCount);
+
+void freeSuite(testSuite* toFree);
+
 bool run(unitTest* t);
+
+int runSuite(testSuite* suite);
 
 bool checkInt(int val, int expected);
 

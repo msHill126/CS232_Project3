@@ -1,11 +1,32 @@
 #include "test.h"
-#include "listTest.c"
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
 
-static bool runTestTests = true;
-static bool runListTests = true;
+testSuite* newSuite(char* name, unitTest* tests, size_t testCount)
+{
+    testSuite* toRet = malloc(sizeof(testSuite));
+    if(toRet == NULL)
+    {
+        fprintf(stderr, "Could not create suite '%s'. Aborting.\n", name);
+        exit(1);
+    }
+
+    toRet->name = name;
+    toRet->tests = tests;
+    toRet->testCount = testCount;
+    return toRet;
+}
+
+void freeSuite(testSuite* toFree)
+{
+    for(int i = 0; i<toFree->testCount; i++)
+    {
+        free( &(toFree->tests[i]));
+    }
+
+    free(toFree);
+}
 
 bool checkInt(int val, int expected)
 {
@@ -62,6 +83,7 @@ bool checkPointerNull(void* val, bool shouldBeNull)
 }
 
 
+
 unitTest* newTest(char* name, bool(*test)())
 {
     unitTest* t = malloc(sizeof(unitTest));
@@ -98,65 +120,21 @@ bool run(unitTest* t)
 }
 
 
-int runSuite(char* name, unitTest* tests, size_t count)
+int runSuite(testSuite* suite)
 {
     int pass = 0;
-    printf("----------%s-----------\n\n", name);
+    printf("----------%s-----------\n\n", suite->name);
 
-    for(int i = 0; i<count; i++)
+    for(int i = 0; i<suite->testCount; i++)
     {
-        if(run(&tests[i]))
+        if(run(&(suite->tests[i])))
         {
             pass++;
         }
       
     }
 
-    printf("\nSuite '%s': %d/%ld passing.\n", name, pass, count);
+    printf("\nSuite '%s': %d/%ld passing.\n", suite->name, pass, suite->testCount);
     return pass;
 }
 
-
-bool alwaysPass(void){return true;}
-bool alwaysFail(void){return false;}
-
-
-int main(void)
-{
-    // this definitely feels like a crude imitation of real software...
-    // I could make a suite struct, that would probably help.
-
-    unitTest basicTests[] = { *newTest("Always Pass", &alwaysPass), *newTest("Always Fail", &alwaysFail)
-    };
-    size_t basicTestsCount = sizeof(basicTests)/sizeof(unitTest);
-    unitTest listTests[] = { *newTest("Basic Comprehension", &basicComprehension), *newTest("Insertion", &insertion),
-        *newTest("Deletion", &deletion)
-    };
-    size_t listTestsCount = sizeof(listTests)/sizeof(unitTest);
-
-
-    int suites = 0;
-    int tests = 0;
-    int testsPassing = 0;
-
-    if(runTestTests)
-    {
-        suites++;
-        tests+=basicTestsCount;
-
-        testsPassing += runSuite("Test Tests", basicTests, basicTestsCount);
-    }
-
-
-    if(runListTests)
-    {
-        suites++;
-        tests+=listTestsCount;
-
-        testsPassing += runSuite("List Tests", listTests, listTestsCount);
-    }
-
-    
-    printf("\n\n-------------RESULT-------------\n %d/%d tests from %d suites passing. See above for details.\n", testsPassing, tests, suites);
-
-}

@@ -1,6 +1,6 @@
-#include "../collection/collection.h"
+#include "../../collection/collection.h"
 #include <string.h>
-#include "test.h"
+#include "../test.h"
 
 bool basicComprehension(void)
 {
