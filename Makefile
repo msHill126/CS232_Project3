@@ -1,4 +1,4 @@
-GCCFlags = -g -Wall -std=c11
+GCCFlags = -g -Wall 
 testOut = -o output/test
 SourceFiles = source/collection/*.c source/crawling/*.c source/soup/*.c
 TestFiles = source/testing/test.c source/testing/framework.c

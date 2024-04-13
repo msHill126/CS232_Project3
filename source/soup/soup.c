@@ -1,5 +1,6 @@
 #include "soup.h"
 #include <string.h>
+#include <stdio.h>
 #include <stdlib.h>
 
 // essentially I copied over the functions that handled the python scripts from project 1 and 2

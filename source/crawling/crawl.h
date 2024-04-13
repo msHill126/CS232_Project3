@@ -51,6 +51,10 @@ listElement* generateRequests(FILE* file, int maxCount);
 // returns 0 on failure.
 bool serviceRequest(crawlRequest* request, listElement* pageList);
 
+
+// index.c
+
+
 // creates an indexedPage from a url. Returns NULL on failure.
 indexedPage* indexPage(char* url);
 

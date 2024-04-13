@@ -6,7 +6,7 @@ static char* getLastSpace(char* line)
     char* toRet = NULL;
     while((*line)!='\0')
     {
-        if(line==' ')
+        if(*line==' ')
         {
             toRet=line;
         }
@@ -31,6 +31,12 @@ static crawlRequest* getRequest(char* line)
     int hops = 0;
     sscanf(last, "%d\n", &hops);
 
+    if(!hops)
+    {
+        fprintf(stderr,"Input was in invalid format. Expected format per line: 'link/to/page with/spaces.example number'.\n number may not be 0 or less.\n");
+        return NULL;
+    }
+
     return newRequest(line, hops);
 
 }
@@ -53,9 +59,9 @@ listElement* generateRequests(FILE* file, int maxCount)
 {
     char lineBuffer[1000];
     listElement* requests = NULL;
-    size_t requests = 0;
+    size_t requestCount = 0;
 
-    while((maxCount == 0 || requests<maxCount)&&(!feof(file)))
+    while((maxCount == 0 || requestCount<maxCount)&&(!feof(file)))
     {
         if(!fgets(lineBuffer, 1000, file)) break;
         if(!hasContent(lineBuffer)) continue;
@@ -77,7 +83,7 @@ listElement* generateRequests(FILE* file, int maxCount)
             return NULL;
         }
         
-        requests++;
+        requestCount++;
     }
 
     fclose(file);

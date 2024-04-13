@@ -14,13 +14,13 @@ void freeType(const type t, void* obj)
     switch (t)
     {
     
-        trie_node:
+        case trie_node:
             freeNode((trieNode*)obj);
             return;
-        crawl_request:
+        case crawl_request:
             freeRequest((crawlRequest*)obj);
             return;
-        indexed_page:
+        case indexed_page:
             freePage((indexedPage*)obj);
             return;
         default:
