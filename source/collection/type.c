@@ -1,4 +1,5 @@
 #include "collection.h"
+#include "trie.h"
 
 
 // free an object of a given type.
@@ -12,7 +13,8 @@ void freeType(const type t, void* obj)
     switch (t)
     {
     
-   
+        trie_node:
+            freeNode((trieNode*)obj);
         default:
             free(obj);
             return;

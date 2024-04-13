@@ -36,12 +36,15 @@
 
 // Later: I wote a lot of stuff I didn't need to
 // luckily I prevented myself from fully writing a bad automated testing framework
+// or did I?
+
 
 
 enum type
 {
     integer,    
-    cstring
+    cstring,
+    trie_node
 };
 
 typedef enum type type;

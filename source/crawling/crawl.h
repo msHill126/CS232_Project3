@@ -1,3 +1,8 @@
+#ifndef CRAWL_H
+#define CRAWL_H
+
+#include "../collection/trie.h"
+
 struct crawlRequest
 {
     char* url;
@@ -11,3 +16,5 @@ struct indexedPage
     unsigned int termCount;
 
 };
+
+#endif
