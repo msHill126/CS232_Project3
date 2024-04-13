@@ -50,7 +50,7 @@ bool getLink(const char* srcAddr, char* link, const int maxLinkLength)
    
 
     // equivalent to curl -s srcAddr | python3 getLinks.py | our_code
-    FILE *pipe = getLinkPipe(srcAddr, buffer, "getLinks", bufSize);
+    FILE *pipe = getPipe(srcAddr, buffer, "getLinks", bufSize);
     // curl -s apparently spits out raw html of a page, so I assume the python file uses some html parser just to
     // get the text content. Apparently Beautiful soup is an html parser, so that makes sense...
     // this doesn't feel like a particularly 'c' way to do things, though.
