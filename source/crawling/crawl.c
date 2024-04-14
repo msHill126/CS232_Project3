@@ -1,8 +1,11 @@
 #include "crawl.h"
+#include "../soup/soup.h"
 #include <string.h>
+
 
 static char* getLastSpace(char* line)
 {
+
     char* toRet = NULL;
     while((*line)!='\0')
     {
@@ -20,6 +23,8 @@ static char* getLastSpace(char* line)
 static crawlRequest* getRequest(char* line)
 {
     char* last = getLastSpace(line);
+
+
     if(last==NULL)
     {
         fprintf(stderr,"Input was in invalid format. Expected format per line: 'link/to/page with/spaces.example number'.\n");
@@ -41,8 +46,10 @@ static crawlRequest* getRequest(char* line)
 
 }
 
+
 static bool hasContent(char* line)
 {
+
     while(*line!='\0')
     {
         if(!isspace(*line))
@@ -55,8 +62,10 @@ static bool hasContent(char* line)
     return false;
 }
 
+
 listElement* generateRequests(FILE* file, int maxCount)
 {
+
     char lineBuffer[1000];
     listElement* requests = NULL;
     size_t requestCount = 0;
@@ -88,4 +97,70 @@ listElement* generateRequests(FILE* file, int maxCount)
 
     fclose(file);
     return requests;
+}
+
+
+static bool containsURL(char* url, listElement* pageList)
+{
+    // it's not effecient to do so, but we're going to iterate through the list like an array because we can.
+    // wee, abstraction
+    // could just use the next member of the struct, but that's no fun, not at all.
+
+    int listSize = getCount(pageList);
+    for(int i = 0; i<listSize; i++)
+    {
+        // this would never cause a weird memory error that will be hard to track down. It's fine.
+        // I mean I made the generic list implementation knowing this would happen
+        // there's a reason void* isn't the safest thing in the world...
+        char* listUrl =((indexedPage*)(pageList->obj))->url;
+        // unrelated, but apparently on windows 11 (or something, not entirely sure), segfaults don't print a message
+        // the program just hangs for a while before exiting.
+        // might be nice if it did, just saying...
+        // well, I'm writing all of this in linux anyways so whatever
+
+
+        if(strcmp(url, listUrl) == 0)
+        {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+
+// returns if a page was successfully indexed.
+static bool indexNewPage(char* url, listElement** pageList, size_t maxPages)
+{
+   
+    if(containsURL(url, *pageList)) return false;
+
+    // I probably need to check this before generating the url using getLink because that will
+    // advance the rng..
+    if(getCount(*pageList)>=maxPages) return false;
+
+    indexedPage* page = indexPage(url);
+    if(!addElement(pageList, indexed_page, page)) exit(1);
+
+    return true;
+}
+
+
+
+void serviceRequest(crawlRequest* request, listElement** pageList, size_t maxPages)
+{
+    indexNewPage(request->url, pageList, maxPages);
+
+    int hopsAttempted = 0;
+    while(getCount(*pageList)<maxPages && hopsAttempted<request->maxHops)
+    {
+
+        char newURL[1000];
+        if(!getLink(request->url, newURL, 1000)) return;
+     
+        indexNewPage(newURL, pageList, maxPages); // we don't care whether this worked or not.
+        hopsAttempted++;
+       
+
+    }
 }

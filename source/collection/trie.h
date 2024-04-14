@@ -41,6 +41,9 @@ struct trieNode
 // You can definitely create more functions to break up tasks into smaller pieces in trie.c, though, if the main file won't need to use them directly.
 // if you do, you should make these functions static, which in C, makes functions 'private' to a particular source file. 
 
+// returns a brand new trie node, usable as a root node.
+trieNode* newTrie(void);
+
 
 
 

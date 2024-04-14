@@ -25,8 +25,7 @@ crawlRequest* newRequest(char* url, unsigned int maxHops)
         return NULL;
     }
 
-    strncpy(req->url, url, strlen(url));
-
+    strncpy(req->url, url, strlen(url)+1);
     return req;
 }
 

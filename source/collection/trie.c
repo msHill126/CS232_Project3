@@ -1,11 +1,47 @@
-
+#ifndef triePUBLISHED     // the project requirements state that the entire program must be in a single source doc.
+                      // I have setup a makefile target to concatenate all of the source files into a single file for this purpose.
+                      // there's no need to have multiple includes in such a file, so they will not be included
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 #include "trie.h"
+#endif
 
 // function definitions (as outlined in the header) go here.    
 
+static trieNode* newNode(char link, trieNode* parent)
+{
+    // create new node.
+    trieNode* next = malloc(sizeof(trieNode));
+
+    if(next==NULL)
+    {
+        fprintf(stderr, "Malloc failed in newNode...\n");
+        exit(1);
+    }
+
+    next->parent = parent;
+    next->visits = 0;
+    if(parent!=NULL)
+    {
+        parent->children[link - 'a'] = next;
+    }
+
+    // initialize child pointers.
+    for(int i = 0; i<children_count; i++)
+    {
+        next->children[i]=NULL;
+    }
+
+    return next;
+}
+
+trieNode* newTrie(void)
+{
+    // create root node
+    // link shouldn't matter.
+    return newNode('a', NULL);
+}
 
 // frees a node and all of its children.
 // node is a pointer to the node to be freed.
@@ -166,29 +202,7 @@ trieNode* getNode(const char* key, trieNode* root)
 
 }
 
-static trieNode* newNode(char link, trieNode* parent)
-{
-    // create new node.
-    trieNode* next = malloc(sizeof(trieNode));
 
-    if(next==NULL)
-    {
-        fprintf(stderr, "Malloc failed in newNode...\n");
-        exit(1);
-    }
-
-    next->parent = parent;
-    next->visits = 0;
-    parent->children[link - 'a'] = next;
-
-    // initialize child pointers.
-    for(int i = 0; i<children_count; i++)
-    {
-        next->children[i]=NULL;
-    }
-
-    return next;
-}
 
 static trieNode* getOrCreateNode(const char* key,  trieNode* root)
 {

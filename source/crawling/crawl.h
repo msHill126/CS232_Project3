@@ -48,14 +48,15 @@ void printPage(FILE* stream, indexedPage* page);
 listElement* generateRequests(FILE* file, int maxCount);
 
 // resizes buffer to fit requests and appends them to the buffer at startingIndex.
-// returns 0 on failure.
-bool serviceRequest(crawlRequest* request, listElement* pageList);
+// pagelist is a list of all pages processed by the program so far
+// maxPages is the maximum size in pages that pageList can contain. 
+void  serviceRequest(crawlRequest* request, listElement** pageList, size_t maxPages);
 
 
 // index.c
 
 
-// creates an indexedPage from a url. Returns NULL on failure.
+// creates an indexedPage from a url. 
 indexedPage* indexPage(char* url);
 
 

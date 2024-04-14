@@ -1,0 +1,11 @@
+/home/fuzzy39/Desktop/CS232/CS232_Project3/getText.py:12: DeprecationWarning: The 'text' argument to find()-type methods is deprecated. Use 'string' instead.
+  strings = soup.findAll(text=True)
+/home/fuzzy39/Desktop/CS232/CS232_Project3/getText.py:12: DeprecationWarning: The 'text' argument to find()-type methods is deprecated. Use 'string' instead.
+  strings = soup.findAll(text=True)
+/home/fuzzy39/Desktop/CS232/CS232_Project3/getText.py:12: DeprecationWarning: The 'text' argument to find()-type methods is deprecated. Use 'string' instead.
+  strings = soup.findAll(text=True)
+/home/fuzzy39/Desktop/CS232/CS232_Project3/getText.py:12: DeprecationWarning: The 'text' argument to find()-type methods is deprecated. Use 'string' instead.
+  strings = soup.findAll(text=True)
+Please enter a query containing only lower-case letters.
+Please enter a query containing only lower-case letters.
+Please enter a query containing only lower-case letters.

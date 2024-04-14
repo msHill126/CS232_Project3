@@ -1,11 +1,11 @@
 #!/bin/bash
 set -u 
 
-./webSearch ./webSearchSol/urlFiles/train1.txt 10 10 < ./webSearchSol/searchFiles/train1.txt > result1.txt 2> result1_err.txt
-./webSearch ./webSearchSol/urlFiles/train2.txt 10 10 < ./webSearchSol/searchFiles/train2.txt > result2.txt 2> result2_err.txt
-./webSearch ./webSearchSol/urlFiles/test0.txt 100 1427195 < ./webSearchSol/searchFiles/test0.txt > test_result_0.txt 2> test_result_0_err.txt
-./webSearch ./webSearchSol/urlFiles/test1.txt 100 1427195 < ./webSearchSol/searchFiles/test1.txt > test_result_1.txt 2> test_result_1_err.txt
-./webSearch ./webSearchSol/urlFiles/test2.txt 100 1427195 < ./webSearchSol/searchFiles/test1.txt > test_result_2.txt 2> test_result_2_err.txt
+./output/webSearch ./webSearchSol/urlFiles/train1.txt 10 10 < ./webSearchSol/searchFiles/train1.txt > result1.txt 2> result1_err.txt
+./output/webSearch ./webSearchSol/urlFiles/train2.txt 10 10 < ./webSearchSol/searchFiles/train2.txt > result2.txt 2> result2_err.txt
+./output/webSearch ./webSearchSol/urlFiles/test0.txt 100 1427195 < ./webSearchSol/searchFiles/test0.txt > test_result_0.txt 2> test_result_0_err.txt
+./output/webSearch ./webSearchSol/urlFiles/test1.txt 100 1427195 < ./webSearchSol/searchFiles/test1.txt > test_result_1.txt 2> test_result_1_err.txt
+./output/webSearch ./webSearchSol/urlFiles/test2.txt 100 1427195 < ./webSearchSol/searchFiles/test1.txt > test_result_2.txt 2> test_result_2_err.txt
 
 ./webSearchSol/webSearch ./webSearchSol/urlFiles/train1.txt 10 10 < ./webSearchSol/searchFiles/train1.txt > ./webSearchSol/result1.txt 2> ./webSearchSol/result1_err.txt
 ./webSearchSol/webSearch ./webSearchSol/urlFiles/train2.txt 10 10 < ./webSearchSol/searchFiles/train2.txt > ./webSearchSol/result2.txt 2> ./webSearchSol/result2_err.txt
