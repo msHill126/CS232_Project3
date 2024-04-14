@@ -75,11 +75,11 @@ bool getLink(const char* srcAddr, char* link, const int maxLinkLength)
     getRandomLine(buffer, bufSize, pipe, numLinks);
    
 
-    /* copy the address from buffer to link */
+    // copy the address from buffer to link 
     strncpy(link, buffer, maxLinkLength);
     link[maxLinkLength-1] = '\0';
 
-    /* get rid of the newline */
+    // get rid of the newline 
     char* pNewline = strchr(link, '\n');
     if(pNewline != NULL)
     {
@@ -107,3 +107,4 @@ int getText(const char* srcAddr, char* buffer, const int bufSize)
 
     return bytesRead;
 }
+

@@ -107,12 +107,13 @@ static bool containsURL(char* url, listElement* pageList)
     // could just use the next member of the struct, but that's no fun, not at all.
 
     int listSize = getCount(pageList);
+    
     for(int i = 0; i<listSize; i++)
     {
         // this would never cause a weird memory error that will be hard to track down. It's fine.
         // I mean I made the generic list implementation knowing this would happen
         // there's a reason void* isn't the safest thing in the world...
-        char* listUrl =((indexedPage*)(pageList->obj))->url;
+        char* listUrl =((indexedPage*)(getElementAt(pageList, i)->obj))->url;
         // unrelated, but apparently on windows 11 (or something, not entirely sure), segfaults don't print a message
         // the program just hangs for a while before exiting.
         // might be nice if it did, just saying...
@@ -132,12 +133,13 @@ static bool containsURL(char* url, listElement* pageList)
 // returns if a page was successfully indexed.
 static bool indexNewPage(char* url, listElement** pageList, size_t maxPages)
 {
-   
+    
     if(containsURL(url, *pageList)) return false;
 
     // I probably need to check this before generating the url using getLink because that will
     // advance the rng..
     if(getCount(*pageList)>=maxPages) return false;
+    
 
     indexedPage* page = indexPage(url);
     if(!addElement(pageList, indexed_page, page)) exit(1);
@@ -151,14 +153,21 @@ void serviceRequest(crawlRequest* request, listElement** pageList, size_t maxPag
 {
     indexNewPage(request->url, pageList, maxPages);
 
+
+    char* currentURL = request->url; // so the instructions on the pdf were not clear on this.
+    // apparently, you wanted each successive call to getlink to have the previous url, instead of the first url
+    // the psudocode in the pdf didn't fully clarify this (should've set url=new_url), and so I had to guess what the code meant.
+    // at least it's not hard to fix
+
     int hopsAttempted = 0;
     while(getCount(*pageList)<maxPages && hopsAttempted<request->maxHops)
     {
 
         char newURL[1000];
-        if(!getLink(request->url, newURL, 1000)) return;
+        if(!getLink(currentURL, newURL, 1000)) return;
      
-        indexNewPage(newURL, pageList, maxPages); // we don't care whether this worked or not.
+        currentURL = newURL;
+        indexNewPage(currentURL, pageList, maxPages); // we don't care whether this worked or not.
         hopsAttempted++;
        
 

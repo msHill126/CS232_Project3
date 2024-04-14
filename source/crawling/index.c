@@ -120,7 +120,6 @@ indexedPage* indexPage(char* url)
     
     // now get total term count.
     int terms = termCount(freq);
-    printf("got term count\n");
 
     return newPage(url, freq, terms);
 
