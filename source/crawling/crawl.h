@@ -49,7 +49,7 @@ listElement* generateRequests(FILE* file, int maxCount);
 
 // resizes buffer to fit requests and appends them to the buffer at startingIndex.
 // pagelist is a list of all pages processed by the program so far
-// maxPages is the maximum size in pages that pageList can contain. 
+// maxPages is the maximum size in pages that pageList can be. 
 void  serviceRequest(crawlRequest* request, listElement** pageList, size_t maxPages);
 
 
