@@ -44,9 +44,11 @@ enum type
 {
     integer,    
     cstring,
+    doublefloat,
     trie_node,
     crawl_request,
-    indexed_page
+    indexed_page,
+    page_score
 };
 
 typedef enum type type;
@@ -85,10 +87,10 @@ size_t getElementIndex(listElement* list, void* element);
 // returns -1 if list does not contain element or either are null.
 
 
-bool removeElement(listElement** list, void* element);
+bool removeElement(listElement** list, void* element, bool free);
 // removes a particular element from the list and frees it.
 
-bool removeElementAt(listElement** list, const size_t index);
+bool removeElementAt(listElement** list, const size_t index, bool free);
 // removes an element at a particular index from the list.
 
 bool addElement(listElement** list, const type t, void* obj);

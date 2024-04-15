@@ -31,8 +31,35 @@ static double calcIDF(listElement* pageList, char* term)
 }
 
 
+listElement* getIDFs(listElement* pageList, listElement* termList)
+{
+    listElement* idfList = NULL;
+    for(int i = 0; i<getCount(termList); i++)
+    {
+        char* term = (char*)(getElementAt(termList, i)->obj);
 
-double score(indexedPage* page, listElement* pageList, listElement* termList )
+        double* idf = malloc(sizeof(double));
+        if(idf == NULL)
+        {
+            fprintf(stderr, "malloc failed in getIDFs.\n");
+            exit(1);
+        }
+        
+        *idf = calcIDF(pageList, term);
+
+        if(!addElement(&idfList, doublefloat, idf))
+        {
+            fprintf(stderr, "addElement fialed in getIDFs.\n");
+            exit(1);
+        }
+    }
+
+    return idfList;
+}
+
+
+
+double score(indexedPage* page, listElement* termList, listElement* idfList)
 {
     size_t numTerms = getCount(termList);
     double score = 0.0;
@@ -40,7 +67,7 @@ double score(indexedPage* page, listElement* pageList, listElement* termList )
     {
         char* term = (char*)(getElementAt(termList, i)->obj);
 
-        score+=scoreTerm(page, term, calcIDF(pageList, term));
+        score+=scoreTerm(page, term, *(double*)(getElementAt(idfList, i)->obj));
     }
 
     return score;

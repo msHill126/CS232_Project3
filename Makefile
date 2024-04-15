@@ -1,4 +1,4 @@
-GCCFlags = -g -Wall 
+GCCFlags = -g -Wall -lm
 testOut = -o output/test
 out = -o output/webSearch
 SourceFiles = source/collection/*.c source/crawling/*.c source/soup/*.c source/integration/*.c
@@ -8,8 +8,8 @@ MainFiles = source/main.c
 main:
 	rm -f output/*
 	cp etc/* output
-	gcc $(GCCFlags) $(out) $(SourceFiles) $(MainFiles)
+	gcc  $(out) $(SourceFiles) $(MainFiles) $(GCCFlags)
 
 tests:
 	rm -f output/*
-	gcc $(GCCFlags) $(testOut) $(SourceFiles) $(TestFiles)
+	gcc  $(testOut) $(SourceFiles) $(TestFiles) $(GCCFlags)

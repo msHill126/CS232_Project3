@@ -22,6 +22,14 @@ struct indexedPage
 
 typedef struct indexedPage indexedPage;
 
+// this is dumb, I have to make a new struct for this?
+struct pageScore
+{
+    double score;
+    indexedPage* page;
+};
+
+typedef struct pageScore pageScore;
 
 // structs.c
 
@@ -38,6 +46,9 @@ void printRequest(FILE* stream, crawlRequest* request);
 void freePage(indexedPage* page);
 
 void printPage(FILE* stream, indexedPage* page);
+
+
+void printScore(FILE* stream, pageScore* score);
 
 
 // crawl.c
@@ -62,9 +73,10 @@ indexedPage* indexPage(char* url);
 
 // scoring.c
 
+listElement* getIDFs(listElement* pageList, listElement* termList);
+
 // returns the TF-IDF scord of a page according to a lsit of terms
 // termList is a list of null terminated strings that consists of only lower case letters.
-double score(indexedPage* page, listElement* termList);
-
+double score(indexedPage* page, listElement* termList, listElement* idfList);
 
 #endif

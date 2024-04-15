@@ -23,6 +23,8 @@ void freeType(const type t, void* obj)
         case indexed_page:
             freePage((indexedPage*)obj);
             return;
+        case page_score:
+            free(obj); // don't care about freeing the page, so we do this.
         default:
             free(obj);
             return;
@@ -47,12 +49,17 @@ void printObject(FILE* stream, const type t, void* obj)
         case cstring:
             fprintf(stream, "%s", (char*)obj);
             return;
+        case doublefloat:
+            fprintf(stream, "%f", *(double*)obj);
+            return;
         case crawl_request:
             printRequest(stream, obj);
             return;
         case indexed_page:
             printPage(stream, obj); // wonder if the compiler will yell at me for not casting the void pointer... (probably)
             return;
+        case page_score:
+            printScore(stream, obj); // apparently it's fine, past self. that seems like an easy way for things to mysteriously break.
         default:
             fprintf(stream, "Unknown Type '%d'",t);
             return;

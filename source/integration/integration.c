@@ -55,11 +55,11 @@ listElement* part1(int argc, char* argv[])
 }
 
 
-bool onlyContainsLower(char* str)
+static bool onlyContainsLower(char* str)
 {
     while(*str!='\0')
     {
-        if(!islower(*str)&& str!=' ')
+        if(!(islower(*str)|| *str==' '))
         {
             return false;
         }
@@ -70,7 +70,7 @@ bool onlyContainsLower(char* str)
     return true;
 }
 
-listElement* parseQuery(char* query)
+static listElement* parseQuery(char* query)
 {
     // okay, we get to do things.
     // unlike the other things we did, which were not things.
@@ -94,7 +94,7 @@ listElement* parseQuery(char* query)
     {
         // this should never happen, given the checks we did earlier, but better safe than sorry I guess.
         fprintf(stderr, "Something went wrong parsing your query.\n");
-        return;
+        return NULL;
     }
 
     // I definitely understand why people invented languages after C
@@ -135,19 +135,50 @@ listElement* parseQuery(char* query)
     return terms;
 }
 
+
+
+static pageScore* getHighestAndRemove(listElement* scores)
+{
+    pageScore* highest = NULL;
+    for(int i = 0; i<getCount(scores); i++)
+    {
+        pageScore* score = (pageScore*)(getElementAt(scores, i)->obj);
+        if(highest==NULL)
+        {
+            highest = score;
+            continue;
+        }
+
+        if(score->score>highest->score)
+        {
+            highest=score;
+        }
+    }
+
+    // got highest.
+    removeElement(&scores, highest, false); // even if highest is somehow null here it should be fine.
+    return highest; // won't be here, but that shouldn't happen anyways
+}
+
+
 #define part2BufferSize 1000
+
 // does return.
+// this function deserves to be approximately five but I couldn't be bothered. nearly done anyways.
 void part2(listElement* pageList)
 {
     while(true)
     {
-        char* buffer[part2BufferSize];
+
+        printf("Enter a web query:");
+        char buffer[part2BufferSize];
         fgets(buffer, part2BufferSize, stdin);
 
-        if(buffer[0]=='\0')
+        if(buffer[0]=='\n')
         {
             return;
         }
+        
 
         if(strlen(buffer)==part2BufferSize-1 && buffer[part2BufferSize-2]!='\n')
         {
@@ -155,46 +186,84 @@ void part2(listElement* pageList)
             continue;
         }
 
+        // get rid of newline.
+        buffer[strlen(buffer)-1]='\0';
+
         if(!onlyContainsLower(buffer))
         {
             fprintf(stderr, "Please enter a query containing only lower-case letters.\n");
             continue;
         }
 
+
+        // print things
+        printf("Query is: \"%s\".\n", buffer);
+
         listElement* terms = parseQuery(buffer);
-        double* scores = malloc(sizeof(double)*getCount(pageList));
-        if(scores==NULL)
+        if(terms==NULL)
         {
-            // do I really need to bother with this check?
-            fprintf(stderr, "malloc failed in part2.\n");
-            exit(1);
+            continue;
         }
-        
+
         // this is an ugly function that I don't like.
         // whatever, nearly done now.
 
-        
+        printf("IDF scores are\n");
+
+        listElement* idfs = getIDFs(pageList, terms);
+
+        for(int i = 0; i<getCount(idfs); i++)
+        {
+            char* term = (char*)(getElementAt(terms, i)->obj);
+            double idf = *(double*)(getElementAt(idfs, i)->obj);
+            printf("IDF(%s): %f\n", term, idf);
+        }
+
+
+        printf("Web pages:\n");
+
+        listElement* scores = NULL;
 
         for(int i = 0; i<getCount(pageList); i++)
         {
-            // oh, I have to store the top 3 scores.
-            // I could be polite and do it in a reasonable way...
-            // could use a stack to sort them, that sounds like the least effecient way possible.
-            // sure, that'll be new
-            // wait, no I don't
-            // okay, I need to make a double counter
-            // that wasn't english
-            // need to register doubles with lists, then just, you know, print out the list
-            // don't really need to sort the list
-            // or just make an array?
-            // I'll just do that, that's much less effort.
-
+            
             // guh
-            indexedPage* page = getElementAt(pageList, i);
-            scores[i]=score(page, terms);
+            indexedPage* page = getElementAt(pageList, i)->obj;
+
+            pageScore* newscore = malloc(sizeof(page_score));
+            if(newscore==NULL)
+            {
+                fprintf(stderr, "malloc failed in pt2...\n");
+                exit(1);
+            }
+
+            newscore->score = score(page, terms, idfs);
+            newscore->page = page;
+
+            if(!addElement(&scores, page_score, newscore))
+            {
+                fprintf(stderr, "addElement failed in part2...\n");
+                exit(1);
+            }
+
         }
 
+        freeList(idfs);
+        freeList(terms);
+        
         // do things
+
+        for(int i = 0; i<3; i++)
+        {
+            pageScore* ps = getHighestAndRemove(scores);
+            printf("%d. ", i+1);
+            printObject(stdout, page_score, ps);
+            printf("\n");
+        }
+        // done, no longer care.
+
+        // whoopdie doodle.
+        freeList(scores);
     }
 }
 

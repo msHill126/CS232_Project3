@@ -62,13 +62,13 @@ size_t getElementIndex( listElement* list, void* element)
 
 
 
-bool removeElement(listElement** list, void* element)
+bool removeElement(listElement** list, void* element, bool shouldFree)
 {
-    return removeElementAt(list, getElementIndex(*list, element));
+    return removeElementAt(list, getElementIndex(*list, element), shouldFree);
 }
 
 
-bool removeElementAt(listElement** list, const size_t index)
+bool removeElementAt(listElement** list, const size_t index, bool shouldFree)
 {
 
     listElement* before = NULL;
@@ -82,8 +82,13 @@ bool removeElementAt(listElement** list, const size_t index)
 
     listElement* after = toRemove->next;
 
-    freeType(toRemove->t, toRemove->obj);
+    if(shouldFree)
+    {
+        freeType(toRemove->t, toRemove->obj);
+    }
+    
     free(toRemove);
+    
 
     if(before != NULL)
     {

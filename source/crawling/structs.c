@@ -63,3 +63,10 @@ void printPage(FILE* stream, indexedPage* page)
     fprintf(stream, "Page: \"%s\"\nTotal terms: %d\n", page->url, page->termCount);
     printTrie(stream, page->root);
 }
+
+
+
+void printScore(FILE* stream, pageScore* score)
+{
+    fprintf(stream, "%s (score: %f)", score->page->url, score->score );
+}
