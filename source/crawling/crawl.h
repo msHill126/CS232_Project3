@@ -60,6 +60,11 @@ void  serviceRequest(crawlRequest* request, listElement** pageList, size_t maxPa
 indexedPage* indexPage(char* url);
 
 
+// scoring.c
+
+// returns the TF-IDF scord of a page according to a lsit of terms
+// termList is a list of null terminated strings that consists of only lower case letters.
+double score(indexedPage* page, listElement* termList);
 
 
 #endif
