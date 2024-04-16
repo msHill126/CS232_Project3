@@ -2,21 +2,42 @@
 #include "../soup/soup.h"
 #include "../collection/trie.h"
 #include <string.h>
+#include <limits.h>
 
 
-static const char* invalidChars =  " \t\n\r.,;:!?'\"()[]{}_-0123456789";
 // thanks Tyler!
 // actually this function is kinda long.
 // Okay, refactoring time
 
+static char* invalidChars(char* buffer)
+{
+    // we assume that the buffer is the correct size.
+    // I'm being lazy, this project is 99.5% done
+    int j = 0;
+    for(int i = 1; i<CHAR_MAX; i++)
+    {
+        if(!isalpha(i))
+        {
+            buffer[j]=i;
+            j++;
+        }
+    }
+
+    buffer[j]='\0';
+    return buffer;
+}
+
+
 
 static void fillTrie(char* buffer, trieNode* root)
 {
+    char invalid[129];
+    invalidChars(&(invalid[0]));
     // Analyze the content and add words to the trie
     // this function isn't pretty but whatever.
    
     // a cursed for loop if I've ever seen one.
-    for (char* word = strtok(buffer,invalidChars); word != NULL; word = strtok(NULL, invalidChars)) 
+    for (char* word = strtok(buffer,invalid); word != NULL; word = strtok(NULL, invalid)) 
     {
         // Clean the word and convert it to lowercase
         char* cleanWord = malloc(strlen(word) + 1);
@@ -37,6 +58,12 @@ static void fillTrie(char* buffer, trieNode* root)
             }
         }
         cleanWord[j] = '\0';
+
+        if(strlen(cleanWord)==0)
+        {
+            free(cleanWord);
+            continue;
+        }
 
         printf("\t%s\n", cleanWord);
 
@@ -59,7 +86,8 @@ static trieNode* getTermFrequency(char* url)
     int bytesRead = getText(url, buffer, sizeof(buffer));
     if (bytesRead <= 0) 
     {
-        fprintf(stderr, "Failed to retrieve text from URL: %s\n", url);
+        // the script failed, meaning that the page could not be accessed or is blank. or something like that.      
+        // fprintf(stderr, "Failed to access '%s'.\n", url);
         return NULL; // Return NULL to indicate failure
     }
 
@@ -117,7 +145,14 @@ static int termCount(trieNode* freq)
 indexedPage* indexPage(char* url)
 {
     trieNode* freq = getTermFrequency(url);
-    
+
+    if(freq==NULL)
+    {
+        // we create a dummy empty page, because apparently the 'correct' program factors in a page that the python script couldn't
+        // access into calculations
+        // that seems like wrong behavior to me, but I guess not
+        return newPage(url, newTrie(), 0);
+    }
     // now get total term count.
     int terms = termCount(freq);
 

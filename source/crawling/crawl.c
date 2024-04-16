@@ -142,6 +142,10 @@ static bool indexNewPage(char* url, listElement** pageList, size_t maxPages)
     
 
     indexedPage* page = indexPage(url);
+    //if(page==NULL) return false; // we, apparently, want to add pages that we couldn't index into calculations.
+                                   // not sure why, but that's how the 'correct' program appears to do it.
+                                   // the pdf isn't specific enough for me to dispute the program, so...
+    
     if(!addElement(pageList, indexed_page, page)) exit(1);
 
     return true;

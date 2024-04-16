@@ -25,6 +25,7 @@ void freeType(const type t, void* obj)
             return;
         case page_score:
             free(obj); // don't care about freeing the page, so we do this.
+            break;
         default:
             free(obj);
             return;
@@ -60,6 +61,7 @@ void printObject(FILE* stream, const type t, void* obj)
             return;
         case page_score:
             printScore(stream, obj); // apparently it's fine, past self. that seems like an easy way for things to mysteriously break.
+            break;
         default:
             fprintf(stream, "Unknown Type '%d'",t);
             return;

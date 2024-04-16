@@ -86,7 +86,7 @@ bool getLink(const char* srcAddr, char* link, const int maxLinkLength)
         *pNewline = '\0';
     }
 
- 
+    pclose(pipe);
     return true;
  
 }

@@ -11,6 +11,7 @@
 size_t getCount(listElement* list)
 {
 
+    
     listElement* current = list;
     size_t count = 0;
 

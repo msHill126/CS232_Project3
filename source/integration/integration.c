@@ -137,12 +137,12 @@ static listElement* parseQuery(char* query)
 
 
 
-static pageScore* getHighestAndRemove(listElement* scores)
+static pageScore* getHighestAndRemove(listElement** scores)
 {
     pageScore* highest = NULL;
-    for(int i = 0; i<getCount(scores); i++)
+    for(int i = 0; i<getCount(*scores); i++)
     {
-        pageScore* score = (pageScore*)(getElementAt(scores, i)->obj);
+        pageScore* score = (pageScore*)(getElementAt(*scores, i)->obj);
         if(highest==NULL)
         {
             highest = score;
@@ -156,7 +156,7 @@ static pageScore* getHighestAndRemove(listElement* scores)
     }
 
     // got highest.
-    removeElement(&scores, highest, false); // even if highest is somehow null here it should be fine.
+    removeElement(scores, highest, false); // even if highest is somehow null here it should be fine.
     return highest; // won't be here, but that shouldn't happen anyways
 }
 
@@ -170,16 +170,11 @@ void part2(listElement* pageList)
     while(true)
     {
 
-        printf("Enter a web query:");
+        printf("\nEnter a web query: ");
         char buffer[part2BufferSize];
         fgets(buffer, part2BufferSize, stdin);
 
-        if(buffer[0]=='\n')
-        {
-            return;
-        }
-        
-
+   
         if(strlen(buffer)==part2BufferSize-1 && buffer[part2BufferSize-2]!='\n')
         {
             fprintf(stderr, "query too long.\n");
@@ -187,7 +182,23 @@ void part2(listElement* pageList)
         }
 
         // get rid of newline.
-        buffer[strlen(buffer)-1]='\0';
+         if(strlen(buffer)==0)
+        {
+            printf("Exiting the program\n");
+            return;
+        }
+
+        if(buffer[strlen(buffer)-1] =='\n')
+        {
+            buffer[strlen(buffer)-1]='\0';
+        }
+
+        // trash code, I know.
+        if(strlen(buffer)==0)
+        {
+            printf("Exiting the program\n");
+            return;
+        }
 
         if(!onlyContainsLower(buffer))
         {
@@ -197,7 +208,7 @@ void part2(listElement* pageList)
 
 
         // print things
-        printf("Query is: \"%s\".\n", buffer);
+        printf("Query is \"%s\".\n", buffer);
 
         listElement* terms = parseQuery(buffer);
         if(terms==NULL)
@@ -216,7 +227,7 @@ void part2(listElement* pageList)
         {
             char* term = (char*)(getElementAt(terms, i)->obj);
             double idf = *(double*)(getElementAt(idfs, i)->obj);
-            printf("IDF(%s): %f\n", term, idf);
+            printf("IDF(%s): %.7f\n", term, idf);
         }
 
 
@@ -230,7 +241,7 @@ void part2(listElement* pageList)
             // guh
             indexedPage* page = getElementAt(pageList, i)->obj;
 
-            pageScore* newscore = malloc(sizeof(page_score));
+            pageScore* newscore = malloc(sizeof(pageScore));
             if(newscore==NULL)
             {
                 fprintf(stderr, "malloc failed in pt2...\n");
@@ -255,15 +266,25 @@ void part2(listElement* pageList)
 
         for(int i = 0; i<3; i++)
         {
-            pageScore* ps = getHighestAndRemove(scores);
+            pageScore* ps = getHighestAndRemove(&scores);
+            if(ps->score<.0001)
+            {
+                free(ps);
+                break;
+            }
+
             printf("%d. ", i+1);
             printObject(stdout, page_score, ps);
             printf("\n");
+            free(ps);
         }
         // done, no longer care.
 
         // whoopdie doodle.
         freeList(scores);
+
+        // maybe this helps?
+        buffer[0]='\0';
     }
 }
 

@@ -68,5 +68,5 @@ void printPage(FILE* stream, indexedPage* page)
 
 void printScore(FILE* stream, pageScore* score)
 {
-    fprintf(stream, "%s (score: %f)", score->page->url, score->score );
+    fprintf(stream, "%s (score: %.4f)", score->page->url, score->score );
 }
